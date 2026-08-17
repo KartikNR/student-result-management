@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Result Management System</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -15,7 +15,7 @@
 
         <p class="subtitle">Enter Student Details and Marks</p>
 
-        <form action="/" method="POST">
+        <form action="/result" method="POST">
 
             <label for="name">Student Name</label>
             <input type="text" id="name" name="name"
@@ -36,6 +36,16 @@
             <button type="submit">Calculate Result</button>
 
         </form>
+
+        {% if result %}
+        <div class="result">
+            <h2>Result</h2>
+            <p><strong>Student:</strong> {{ name }}</p>
+            <p><strong>Total:</strong> {{ total }}</p>
+            <p><strong>Average:</strong> {{ average }}</p>
+            <p><strong>Result:</strong> {{ result }}</p>
+        </div>
+        {% endif %}
 
     </div>
 

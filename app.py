@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, render_template
+from database import initialize_database, add_student
 
 app = Flask(__name__)
 
@@ -23,34 +24,49 @@ def calculate_result(marks):
         return "FAIL"
 
 
+# Initialize database when application starts
+initialize_database()
+
+
 # Home route
 @app.route("/")
 def home():
-    return "Student Result Management Backend"
+    return render_template("index.html")
 
 
 # Student result route
 @app.route("/result", methods=["POST"])
 def student_result():
 
-    data = request.get_json()
+    name = request.form["name"]
 
-    name = data["name"]
-    usn = data["usn"]
-    marks = data["marks"]
+    marks1 = int(request.form["marks1"])
+    marks2 = int(request.form["marks2"])
+    marks3 = int(request.form["marks3"])
+
+    marks = [marks1, marks2, marks3]
 
     total = calculate_total(marks)
     average = calculate_average(marks)
     result = calculate_result(marks)
 
-    return jsonify({
-        "name": name,
-        "usn": usn,
-        "marks": marks,
-        "total": total,
-        "average": average,
-        "result": result
-    })
+    # Store result in SQLite database
+    add_student(
+        name,
+        marks1,
+        marks2,
+        marks3,
+        total,
+        result
+    )
+
+    return render_template(
+        "index.html",
+        name=name,
+        total=total,
+        average=average,
+        result=result
+    )
 
 
 if __name__ == "__main__":
